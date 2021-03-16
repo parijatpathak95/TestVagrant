@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "4060048f-24a6-4afe-9678-8c8f9fda992d",
+		"name": "PunkAPIExample",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET",
+			"item": [
+				{
+					"name": "GetSingleBeerById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/?id=PunkAPIExample{{randomId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "PunkAPIExample{{randomId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBeerByGeneratingRandomID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Beer id is available in the List--Success\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Beer Id is not present in List\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/{{$randomInt}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"{{$randomInt}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SetQueryParameterGlobally",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let QueryParam='?hops=Fuggles'\r",
+									"pm.globals.set(\"QueryParam\", QueryParam);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"console.log(pm.globals.get('QueryParam'))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.punkapi.com/v2/beers",
+							"protocol": "https",
+							"host": [
+								"api",
+								"punkapi",
+								"com"
+							],
+							"path": [
+								"v2",
+								"beers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetDesiredMultipleIds",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "VerifyGettingAbvValueWithURL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify that abv parameter is greater than mentioned value\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[0].abv).to.greaterThan(50);\r",
+									"});\r",
+									"pm.variables.get(\"abv_gt\");\r",
+									"pm.test(\"Verify that the response arrived is ok \", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}?abv_gt=50",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"query": [
+								{
+									"key": "abv_gt",
+									"value": "50"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VerifyGettingBeerNameBySettingParamToGlobal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Verify parameter value is equals to Defined parameter\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[0].name).to.equal(pm.globals.get('beer_name'));\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set('beer_name','Buzz');\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}?{{beer_name}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"query": [
+								{
+									"key": "{{beer_name}}",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST",
+			"item": [
+				{
+					"name": "CreateNewBeerId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"console.log(pm.environment.set(\"randomId\", _.random(1,100)))"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseURL",
+			"value": "https://api.punkapi.com/v2/beers"
+		},
+		{
+			"key": "randomId",
+			"value": ""
+		},
+		{
+			"key": "beer_name",
+			"value": ""
+		}
+	]
+}
